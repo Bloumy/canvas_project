@@ -1,0 +1,16 @@
+{
+  "name": "canvas_project",
+  "version": "0.0.1",
+  "description": "Project canvas html5 RPG game",
+  "main": "js/rpg.js",
+  "scripts": {
+    "install": "sh install.sh"
+  },
+  "author": "Alexis Hordé",
+  "license": "",
+  "dependencies": {
+    "uglify-js": "^2.6.1",
+    "browserify": "^13.0.0",
+    "excanvas": "^1.0.0"
+  }
+}
