@@ -1,9 +1,11 @@
 var Key = require('./Key');
+var Mouse = require('./Mouse');
 var Directions = require('./Directions');
 
-function Controles(map) {
+function Controles(map, canvasDiv) {
     this.i = 0;
     this.map = map;
+    this.canvasDiv = canvasDiv;
     this.directions = new Directions();
     this.initCommandeKey();
 }
@@ -11,7 +13,9 @@ function Controles(map) {
 
 Controles.prototype.initCommandeKey = function () {
 
-    var k = new Key();
+    var k = new Key(this.canvasDiv);
+    var m = new Mouse(this.canvasDiv);
+    this.mouseKeys = m;
     this.keys = k;
 
 //    var key = k.KEY;
@@ -35,6 +39,10 @@ Controles.prototype.assignKeybordToChar = function (char) {
     document.addEventListener("deactivatekey", function (e) {
         self.activateCharCommande(char);
     });
+    
+    document.addEventListener("mousedown", function (e) {
+        self.activateCharCommande(char);
+    });
 
 };
 
@@ -45,6 +53,9 @@ Controles.prototype.activateCharCommande = function (char) {
     var keysReverse = this.swap(keys);
     var d = this.directions;
     var key = this.keys.KEY;
+
+    //commandes à la souris
+//    if(mouse.click)
 
     //commandes à deux touches
     if (key.up in keysReverse && key.right in keysReverse) {
