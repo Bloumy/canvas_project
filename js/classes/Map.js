@@ -59,21 +59,7 @@ Map.prototype.dessinerMapBoucleAuto = function (context, milisecondes) {
 };
 
 Map.prototype.isObstacle = function (coord) {
-    /* conditions de délimitation à la map */
-    if (coord.x < 0) {
-        return true;
-    }
-    if (coord.y < 0) {
-        return true;
-    }
-    if (coord.x >= (this.getLargeur() - 1) * this.TAILLE_CASE_EN_PX) {
-        return true;
-    }
-    var tailleSprite = 48;
-    if (coord.y >= ((this.getHauteur() - (1 + (tailleSprite - this.TAILLE_CASE_EN_PX)/this.TAILLE_CASE_EN_PX)) * this.TAILLE_CASE_EN_PX)) {
-        return true;
-    }
-
+   // TODO : determiner l'emplacement d'un obstacle
     return false;
 };
 

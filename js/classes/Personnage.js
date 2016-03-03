@@ -35,7 +35,7 @@ function Personnage(url, x, y, direction) {
     this.hauteur = this.image.height / 4;
 
     this.frame = 0;
-    this.interval = null; 
+    this.interval = null;
     return this;
 }
 ;
@@ -48,10 +48,13 @@ Personnage.prototype.dessinerPersonnage = function (context) {
             this.image,
             this.largeur * this.frame, this.direction * this.hauteur, // Point d'origine du rectangle source à prendre dans notre image
             this.largeur, this.hauteur, // Taille du rectangle source (c'est la taille du personnage)
-//            (this.xPixel) - (this.largeur / 2) + 16, (this.yPixel) - this.hauteur + 24, // Point de destination (dépend de la taille du personnage)
-            this.xPixel, this.yPixel, // Point de destination (dépend de la taille du personnage)
+            this.xPixel, this.yPixel, // Point de destination
             this.largeur, this.hauteur // Taille du rectangle destination (c'est la taille du personnage)
             );
+
+    if (this.arme) {
+        this.arme.dessinerArme(context);
+    }
 };
 
 Personnage.prototype.getCoordonneesAdjacentes = function (angle, nbPx) {
@@ -93,17 +96,15 @@ Personnage.prototype.deplacerEnPx = function (angle, map, nbPx) {
     // On vérifie que la case demandée est bien située dans la carte
     var coordDestination = this.getCoordonneesAdjacentes(angle, nbPx);
 
-    console.log('x = '+this.xPixel);
-    console.log('y = ' + this.yPixel);
     // s'il y a un obstacle on n'effectue pas le déplacement
-    if (map.isObstacle(coordDestination)) {
+
+    if (!this.canGoTo(map, coordDestination)) {
         return false;
     }
 
     // on update les coordonnées de la position du personnage
     this.xPixel = coordDestination.x;
     this.yPixel = coordDestination.y;
-
 
     return true;
 };
@@ -115,7 +116,6 @@ Personnage.prototype.doNothing = function () {
 
 Personnage.prototype.deplacer = function (angle, map, nbPx) {
     clearInterval(this.interval);
-
     this.frame = 0;
 
 
@@ -152,6 +152,35 @@ Personnage.prototype.deplacer = function (angle, map, nbPx) {
     } else {
         this.deplacerEnPx(angle, map, nbPx);
     }
+};
+
+
+Personnage.prototype.canGoTo = function (map, coord) {
+    /* conditions de délimitation à la map */
+    if (coord.x < 0) {
+        return false;
+    }
+    if (coord.y < 0) {
+        return false;
+    }
+    if (coord.x >= (map.getLargeur() - 1) * map.TAILLE_CASE_EN_PX) {
+        return false;
+    }
+    if (coord.y >= ((map.getHauteur() - (1 + (this.hauteur - map.TAILLE_CASE_EN_PX) / map.TAILLE_CASE_EN_PX)) * map.TAILLE_CASE_EN_PX)) {
+        return false;
+    }
+    if (map.isObstacle(coord)) {
+        return false;
+    }
+
+    return true;
+};
+
+Personnage.prototype.equiperArme = function (arme) {
+    this.arme = arme;
+    arme.equipedBy = this;
+    arme.xPixel = this.xPixel;
+    arme.yPixel = this.yPixel;
 };
 
 module.exports = Personnage;

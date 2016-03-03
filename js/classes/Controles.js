@@ -13,7 +13,7 @@ Controles.prototype.initCommandeKey = function () {
 
     var k = new Key();
     this.keys = k;
-    
+
 //    var key = k.KEY;
 //    this.DEFAULT_COMMANDE[this.direction.DIRECTION.HAUT] = [[key.up, key.A, key.a]];
 //    this.DEFAULT_COMMANDE[this.direction.DIRECTION.HAUTDROITE] = [[key.up, key.A, key.a],[key.right, key.D, key.d]];
@@ -36,7 +36,6 @@ Controles.prototype.assignKeybordToChar = function (char) {
         self.activateCharCommande(char);
     });
 
-
 };
 
 
@@ -52,21 +51,23 @@ Controles.prototype.activateCharCommande = function (char) {
         char.deplacer(45, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         return true;
     }
-    
-    if(key.down in keysReverse && key.right in keysReverse ){
-        char.deplacer(315,this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+
+    if (key.down in keysReverse && key.right in keysReverse) {
+        char.deplacer(315, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         return true;
     }
-    
-    if(key.up in keysReverse && key.left in keysReverse ){
-        char.deplacer(135,this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+
+    if (key.up in keysReverse && key.left in keysReverse) {
+        char.deplacer(135, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         return true;
     }
-    
-     if(key.down in keysReverse && key.left in keysReverse ){
-        char.deplacer(225,this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+
+    if (key.down in keysReverse && key.left in keysReverse) {
+        char.deplacer(225, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         return true;
     }
+
+
 
     //commandes à une touche
     if (key.up in keysReverse) {
@@ -83,11 +84,12 @@ Controles.prototype.activateCharCommande = function (char) {
         char.deplacer(270, this.map);
         return true;
     }
-    
+
     if (key.left in keysReverse) {
         char.deplacer(180, this.map);
         return true;
     }
+
     
     char.doNothing();
     return false;
