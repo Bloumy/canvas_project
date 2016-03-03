@@ -31,8 +31,10 @@ function Arme(name, url, spriteX, spriteY, tx, ty, angle) {
     this.xPixel = 0;
     this.yPixel = 0;
 
+    this.type = 'custom';
 
 }
+;
 
 Arme.prototype.equipeToChar = function (char) {
     char.equiperArme(this);
@@ -57,12 +59,13 @@ Arme.prototype.dessinerArme = function (context) {
     // rotate around that point, converting our 
     // angle from degrees to radians 
     context.rotate(this.angle * Math.PI / 180);
-    context.translate(this.equipedBy.xPixel, this.equipedBy.yPixel);
+    context.translate(-(this.equipedBy.xPixel + this.translationX), -(this.equipedBy.yPixel + this.translationY));
+//    return;
     context.drawImage(
             this.image,
             this.largeur * this.spriteX, this.hauteur * this.spriteY, // Point d'origine du rectangle source à prendre dans notre image
             this.largeur, this.hauteur, // Taille du rectangle source (c'est la taille de l'arme)
-            -this.equipedBy.xPixel, -this.equipedBy.yPixel, // Point de destination
+            this.equipedBy.xPixel + this.translationX, this.equipedBy.yPixel + this.translationY, // Point de destination
             this.largeur, this.hauteur // Taille du rectangle destination (c'est la taille du personnage)
             );
 
@@ -70,27 +73,87 @@ Arme.prototype.dessinerArme = function (context) {
     context.restore();
 };
 
-Arme.prototype.drawRotatedImage = function (context, image, x, y, angle) {
+//Arme.prototype.drawRotatedImage = function (context, image, x, y, angle) {
+//
+//    // save the current co-ordinate system 
+//    // before we screw with it
+//    context.save();
+//
+//    // move to the middle of where we want to draw our image
+//    context.translate(x, y);
+//
+//    // rotate around that point, converting our 
+//    // angle from degrees to radians 
+//    context.rotate(angle * Math.PI / 180);
+//
+//    // draw it up and to the left by half the width
+//    // and height of the image 
+//    context.drawImage(
+//            image,
+//            -(this.image.width / 2), -(this.image.height / 2));
+//
+//    // and restore the co-ords to how they were when we began
+//    context.restore();
+//};
 
-    // save the current co-ordinate system 
-    // before we screw with it
-    context.save();
+Arme.prototype.getType = function () {
+    return this.type;
+};
 
-    // move to the middle of where we want to draw our image
-    context.translate(x, y);
+Arme.prototype.positionnerArmeOnChar = function () {
 
-    // rotate around that point, converting our 
-    // angle from degrees to radians 
-    context.rotate(angle * Math.PI / 180);
+    if (!this.equipedBy) {
+        return;
+    }
 
-    // draw it up and to the left by half the width
-    // and height of the image 
-    context.drawImage(
-            image,
-            -(this.image.width / 2), -(this.image.height / 2));
+    this.xPixel = this.equipedBy.xPixel;
+    this.yPixel = this.equipedBy.yPixel;
 
-    // and restore the co-ords to how they were when we began
-    context.restore();
+    this.translationX = 0;
+    this.translationY = 0;
+    this.angle = 0;
+
+    //pour passer la frame de l'arme sous celle du char
+    this.zindex = this.equipedBy.zindex;
+
+
+    switch (this.getType()) {
+        case 'epee':
+            if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.DROITE) {
+                this.translationX += 44;
+                this.translationY += 4;
+                this.angle += 90;
+                this.zindex = 100;
+                this.zindex += 10;
+            }
+
+            if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.GAUCHE) {
+                this.translationX -= 13;
+                this.translationY += 4;
+                this.angle += 0;
+                this.zindex -= 10;
+            }
+
+            if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.HAUT) {
+                this.translationX += 20;
+                this.translationY -= 6;
+                this.angle += 45;
+                this.zindex -= 10;
+            }
+
+            if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.BAS) {
+                this.translationX += 14;
+                this.translationY -= 6;
+                this.angle += 45;
+                this.zindex += 10;
+            }
+            break;
+        default:
+            ;
+
+    }
+    ;
+
 };
 
 

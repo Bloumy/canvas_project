@@ -36,6 +36,7 @@ function Personnage(url, x, y, direction) {
 
     this.frame = 0;
     this.interval = null;
+    this.zindex = 0;
     return this;
 }
 ;
@@ -43,7 +44,14 @@ function Personnage(url, x, y, direction) {
 
 
 Personnage.prototype.dessinerPersonnage = function (context) {
-
+    
+    
+    //dessiner l'arme avant si personnage au dessus
+    if (this.arme && this.arme.zindex < this.zindex ) {
+        this.arme.positionnerArmeOnChar();
+        this.arme.dessinerArme(context);
+    }
+    
     context.drawImage(
             this.image,
             this.largeur * this.frame, this.direction * this.hauteur, // Point d'origine du rectangle source à prendre dans notre image
@@ -51,8 +59,10 @@ Personnage.prototype.dessinerPersonnage = function (context) {
             this.xPixel, this.yPixel, // Point de destination
             this.largeur, this.hauteur // Taille du rectangle destination (c'est la taille du personnage)
             );
-
-    if (this.arme) {
+    
+    //dessiner l'arme apres si personnage au dessous
+    if (this.arme && this.arme.zindex >= this.zindex ) {
+        this.arme.positionnerArmeOnChar();
         this.arme.dessinerArme(context);
     }
 };
@@ -179,8 +189,18 @@ Personnage.prototype.canGoTo = function (map, coord) {
 Personnage.prototype.equiperArme = function (arme) {
     this.arme = arme;
     arme.equipedBy = this;
-    arme.xPixel = this.xPixel;
-    arme.yPixel = this.yPixel;
+    this.positionnerArme();
+};
+
+Personnage.prototype.positionnerArme = function () {
+    if(!this.arme){
+        return;
+    }
+    
+    this.arme.positionnerArmeOnChar();
+    
+//    Si personnage a droite, positionner arme comme ceci
+//    Si personnage a gauche, positionner arme comme cela
 };
 
 module.exports = Personnage;
