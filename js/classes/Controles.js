@@ -63,30 +63,36 @@ Controles.prototype.activateCharCommande = function (char) {
 
     //commandes à la souris
     if (mouseButton.left in mouseButtonsReverse) {
-        char.attaquer();
+        char.chargerAttaque();
     }else{
-        char.annulerAttaque();
+        if(char.isChargingAttaque){
+            char.attaquer();
+        }
     }
     
 
     //commandes à deux touches
     if (key.up in keysReverse && key.right in keysReverse) {
-        char.deplacer(45, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
-        return true;
-    }
-
-    if (key.down in keysReverse && key.right in keysReverse) {
+//        char.deplacer(45, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         char.deplacer(315, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         return true;
     }
 
+    if (key.down in keysReverse && key.right in keysReverse) {
+//        char.deplacer(315, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+        char.deplacer(45, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+        return true;
+    }
+
     if (key.up in keysReverse && key.left in keysReverse) {
-        char.deplacer(135, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+//        char.deplacer(135, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+        char.deplacer(225, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         return true;
     }
 
     if (key.down in keysReverse && key.left in keysReverse) {
-        char.deplacer(225, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+//        char.deplacer(225, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+        char.deplacer(135, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         return true;
     }
 
@@ -94,7 +100,8 @@ Controles.prototype.activateCharCommande = function (char) {
 
     //commandes à une touche
     if (key.up in keysReverse) {
-        char.deplacer(90, this.map);
+//        char.deplacer(90, this.map);
+        char.deplacer(270, this.map);
         return true;
     }
 
@@ -104,7 +111,8 @@ Controles.prototype.activateCharCommande = function (char) {
     }
 
     if (key.down in keysReverse) {
-        char.deplacer(270, this.map);
+//        char.deplacer(270, this.map);
+        char.deplacer(90, this.map);
         return true;
     }
 

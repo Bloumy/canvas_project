@@ -17,10 +17,11 @@ window.onload = function () {
 
 //appeler une map
     var map = new Map("floor1");
-    var directions = new Directions();
     var controles = new Controles(map, canvas);
-    var hero = new Personnage("hero.png", 1, 1, directions.DIRECTION.HAUT);
-//var epee = new Arme("Epee", "icones.png", 0, 5, 0, 0, 0);
+    var angle  = 0;//degres
+    var hero = new Personnage("hero.png", 1, 1, angle);
+    
+//    var epee = new Arme("Epee", "icones.png", 0, 5, 0, 0, 0);
     var armes = new Armes();
     var epee = armes.createEpee('ExcaliBurne');
 
@@ -37,7 +38,7 @@ window.onload = function () {
 
     //Assigner une arme au personnage
     hero.equiperArme(epee);
-    console.log(epee);
+//    console.log(epee);
 
 
     //Dessiner une carte

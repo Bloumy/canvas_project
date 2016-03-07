@@ -49,7 +49,11 @@ function Arme(name, url, spriteX, spriteY, tx, ty, angle) {
     // stats de l'arme
     this.degats = 10;
     this.poid = 1; // influe sur la vitesse d'attaque
-    this.portee = 10;
+
+    // pour la hitbox
+    this.portee = 32;
+    this.angleAttaque = 45; // degres
+    this.direction = 0;
 
     // rattachement d'une hitbox
     this.hitBox = new HitBox(this);
@@ -115,7 +119,7 @@ Arme.prototype.positionnerArmeOnChar = function () {
 
     var oldTranslationX = this.equipedBy.xPixel - this.xPixel;
     var oldTranslationY = this.equipedBy.xPixel - this.yPixel;
-    
+
     var translationX = 0;
     var translationY = 0;
     var angle = 0;
@@ -126,19 +130,19 @@ Arme.prototype.positionnerArmeOnChar = function () {
     switch (this.getType()) {
         case this.type = this.TYPE.EPEE:
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.DROITE) {
-                if (this.animationAttaque) {
+//                if (this.animationAttaque) {
 
-                    translationX += 44;
-                    translationY += oldTranslationY + 30/nbFrame;
-                    angle += this.angle + 60 / nbFrame;
-                    zindex += 10;
-                } else {
+//                    translationX += 44;
+//                    translationY += oldTranslationY + 30 / nbFrame;
+//                    angle += this.angle + 60 / nbFrame;
+//                    zindex += 10;
+//                } else {
                     translationX += 44;
                     translationY += 4;
                     angle += 90;
                     zindex += 10;
 
-                }
+//                }
             }
 
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.GAUCHE) {
@@ -175,6 +179,11 @@ Arme.prototype.positionnerArmeOnChar = function () {
     this.zindex = zindex;
 
 
+};
+
+Arme.prototype.chargerAttaque = function () {
+
+ 
 };
 
 Arme.prototype.attaquer = function () {
