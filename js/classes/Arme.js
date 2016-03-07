@@ -1,44 +1,65 @@
+var HitBox = require('./HitBox');
+
+Arme.prototype.TYPE = {
+    CUSTOM: 'custom',
+    SWORD: 'epee'
+};
+
 function Arme(name, url, spriteX, spriteY, tx, ty, angle) {
+
+    if (tx !== undefined || tx !== null) {
+        tx = 0;
+    }
+    if (ty !== undefined || ty !== null) {
+        ty = 0;
+    }
+    if (angle !== undefined || angle !== null) {
+        angle = 0;
+    }
+
+    // nom de l'arme crée (nom unique)
     this.name = name;
 
+    // image assignée à l'arme
     this.image = new Image();
     this.image.referenceDeLArme = this;
     this.image.src = "sprites/" + url;
-    this.largeur = this.image.width / 14;
-    this.hauteur = this.image.height / 30;
+    this.largeur = this.image.width / 14; // divisé par le nombre d'icone sur une ligne
+    this.hauteur = this.image.height / 30; // divisé par le nombre d'icone sur une colone
 
-    //choix de l'image dans la grille d'image
+    // choix de l'image dans la grille d'image
     this.spriteX = spriteX;
     this.spriteY = spriteY;
 
-    // positionnement de l'image dans la source
-    this.angle = 0;
-    this.translationX = 0;
-    this.translationY = 0;
-    if (angle !== undefined || angle !== null) {
-        this.angle = angle;
-    }
+    // positionnement
+    this.angle = angle;
+    this.xPixel = tx;
+    this.yPixel = ty;
 
-    if (tx !== undefined || tx !== null) {
-        this.translationX = tx;
-    }
+    // passe à true quand on effectue l'action "attaque"
+    this.animationAttaque = false;
+    // temps de l'action "attaque"
+    this.attaqueDuration = 200; // millisecondes
+    // maintient le timeOut pour le supprimer quand necessaire
+    this.attaqueTimeOutHolder = null;
 
-    if (ty !== undefined || ty !== null) {
-        this.translationY = ty;
-    }
+    // type de l'arme, par defaut, custom
+    this.type = this.TYPE.CUSTOM;
 
-    // emplacement sur la map
-    this.xPixel = 0;
-    this.yPixel = 0;
+    // stats de l'arme
+    this.degats = 10;
+    this.poid = 1; // influe sur la vitesse d'attaque
+    this.portee = 10;
 
-    this.type = 'custom';
+    // rattachement d'une hitbox
+    this.hitBox = new HitBox(this);
 
 }
 ;
 
 Arme.prototype.equipeToChar = function (char) {
-    char.equiperArme(this);
     this.equipedBy = char;
+    char.arme = this;
 };
 
 
@@ -54,47 +75,31 @@ Arme.prototype.dessinerArme = function (context) {
     context.save();
 
     // move to the middle of where we want to draw our image
-    context.translate(this.equipedBy.xPixel + this.translationX, this.equipedBy.yPixel + this.translationY);
+    context.translate(this.xPixel, this.yPixel);
 
     // rotate around that point, converting our 
     // angle from degrees to radians 
     context.rotate(this.angle * Math.PI / 180);
-    context.translate(-(this.equipedBy.xPixel + this.translationX), -(this.equipedBy.yPixel + this.translationY));
+    context.translate(-this.xPixel, -this.yPixel);
 //    return;
     context.drawImage(
             this.image,
             this.largeur * this.spriteX, this.hauteur * this.spriteY, // Point d'origine du rectangle source à prendre dans notre image
             this.largeur, this.hauteur, // Taille du rectangle source (c'est la taille de l'arme)
-            this.equipedBy.xPixel + this.translationX, this.equipedBy.yPixel + this.translationY, // Point de destination
+            this.xPixel, this.yPixel, // Point de destination
             this.largeur, this.hauteur // Taille du rectangle destination (c'est la taille du personnage)
             );
 
     // and restore the co-ords to how they were when we began
     context.restore();
+
+    this.hitBox.drawHitBox(context);
 };
 
-//Arme.prototype.drawRotatedImage = function (context, image, x, y, angle) {
-//
-//    // save the current co-ordinate system 
-//    // before we screw with it
-//    context.save();
-//
-//    // move to the middle of where we want to draw our image
-//    context.translate(x, y);
-//
-//    // rotate around that point, converting our 
-//    // angle from degrees to radians 
-//    context.rotate(angle * Math.PI / 180);
-//
-//    // draw it up and to the left by half the width
-//    // and height of the image 
-//    context.drawImage(
-//            image,
-//            -(this.image.width / 2), -(this.image.height / 2));
-//
-//    // and restore the co-ords to how they were when we began
-//    context.restore();
-//};
+
+Arme.prototype.positionnerHitBox = function () {
+    return this.type;
+};
 
 Arme.prototype.getType = function () {
     return this.type;
@@ -106,47 +111,57 @@ Arme.prototype.positionnerArmeOnChar = function () {
         return;
     }
 
-    this.xPixel = this.equipedBy.xPixel;
-    this.yPixel = this.equipedBy.yPixel;
+    var nbFrame = this.attaqueDuration / this.equipedBy.map.refreshInterval;
 
-    this.translationX = 0;
-    this.translationY = 0;
-    this.angle = 0;
+    var oldTranslationX = this.equipedBy.xPixel - this.xPixel;
+    var oldTranslationY = this.equipedBy.xPixel - this.yPixel;
+    
+    var translationX = 0;
+    var translationY = 0;
+    var angle = 0;
+    var zindex = this.equipedBy.zindex;
 
     //pour passer la frame de l'arme sous celle du char
-    this.zindex = this.equipedBy.zindex;
-
 
     switch (this.getType()) {
-        case 'epee':
+        case this.type = this.TYPE.EPEE:
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.DROITE) {
-                this.translationX += 44;
-                this.translationY += 4;
-                this.angle += 90;
-                this.zindex = 100;
-                this.zindex += 10;
+                if (this.animationAttaque) {
+
+                    translationX += 44;
+                    translationY += oldTranslationY + 30/nbFrame;
+                    angle += this.angle + 60 / nbFrame;
+                    zindex += 10;
+                } else {
+                    translationX += 44;
+                    translationY += 4;
+                    angle += 90;
+                    zindex += 10;
+
+                }
             }
 
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.GAUCHE) {
-                this.translationX -= 13;
-                this.translationY += 4;
-                this.angle += 0;
-                this.zindex -= 10;
+                translationX -= 13;
+                translationY += 4;
+                angle += 0;
+                zindex -= 10;
             }
 
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.HAUT) {
-                this.translationX += 20;
-                this.translationY -= 6;
-                this.angle += 45;
-                this.zindex -= 10;
+                translationX += 20;
+                translationY -= 6;
+                angle += 45;
+                zindex -= 10;
             }
 
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.BAS) {
-                this.translationX += 14;
-                this.translationY -= 6;
-                this.angle += 45;
-                this.zindex += 10;
+                translationX += 14;
+                translationY -= 6;
+                angle += 45;
+                zindex += 10;
             }
+
             break;
         default:
             ;
@@ -154,7 +169,56 @@ Arme.prototype.positionnerArmeOnChar = function () {
     }
     ;
 
+    this.xPixel = this.equipedBy.xPixel + translationX;
+    this.yPixel = this.equipedBy.yPixel + translationY;
+    this.angle = angle;
+    this.zindex = zindex;
+
+
 };
+
+Arme.prototype.attaquer = function () {
+
+    var self = this;
+    this.animationAttaque = true;
+    this.attaqueTimeOutHolder = setTimeout(function () {
+        self.annulerAttaque();
+    }, this.attaqueDuration);
+
+    //faire des degats à tous les ennemis dont la hitbox se situe dans la hitbox de l'epee
+    var cibles = this.getTargetsInRange();
+    var degats = 0;
+    for (var cible in cibles) {
+        degats = this.calculateDamage(cible);
+        cible.vie -= degats;
+    }
+};
+
+Arme.prototype.annulerAttaque = function () {
+    if (!this.animationAttaque) {
+        return;
+    }
+    clearTimeout(this.attaqueHolder);
+    this.animationAttaque = false;
+};
+
+
+Arme.prototype.getTargetsInRange = function () {
+    var targets = [];
+    return targets;
+};
+
+Arme.prototype.calculateDamage = function (cible) {
+    return this.degats;
+};
+
+//
+//Arme.prototype.getHitBoxCenterCoord = function () {
+//    return {
+//        x: this.xPixel + this.largeur / 2,
+//        y: this.yPixel + this.hauteur / 2
+//    };
+//};
 
 
 module.exports = Arme;

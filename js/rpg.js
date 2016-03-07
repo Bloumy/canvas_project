@@ -44,25 +44,25 @@ window.onload = function () {
 //    map.dessinerMap(ctx);
     map.dessinerMapBoucleAuto(ctx, 40);
 
-    document.addEventListener("activatemousebutton", function (e) {
-        console.log(e);
-    });
-//    
-    document.addEventListener("deactivatemousebutton", function (e) {
-        console.log(e);
-    });
+//    document.addEventListener("activatemousebutton", function (e) {
+//        console.log(e);
+//    });
+////    
+//    document.addEventListener("deactivatemousebutton", function (e) {
+//        console.log(e);
+//    });
+////
+////
+////
+////
+////
+//    document.addEventListener("activatemousescroll", function (e) {
+//        console.log(e);
+//    }); 
 //
-//
-//
-//
-//
-    document.addEventListener("activatemousescroll", function (e) {
-        console.log(e);
-    }); 
-
-    document.addEventListener("mousemovewhileclick", function (e) {
-        console.log(e);
-    }); 
+//    document.addEventListener("mousemovewhileclick", function (e) {
+//        console.log(e);
+//    }); 
 };
 
 

@@ -53,6 +53,7 @@ Map.prototype.dessinerMap = function (context) {
 
 Map.prototype.dessinerMapBoucleAuto = function (context, milisecondes) {
     var self = this;
+    this.refreshInterval = milisecondes;
     setInterval(function () {
         self.dessinerMap(context);
     }, milisecondes);
@@ -68,6 +69,7 @@ Map.prototype.isObstacle = function (coord) {
  * @param {Personnage} perso
  */
 Map.prototype.addPersonnage = function (perso) {
+    perso.map = this;
     this.personnages.push(perso);
 };
 

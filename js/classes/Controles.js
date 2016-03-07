@@ -15,7 +15,7 @@ Controles.prototype.initCommandeKey = function () {
 
     var k = new Key(this.canvasDiv);
     var m = new Mouse(this.canvasDiv);
-    this.mouseKeys = m;
+    this.mouse = m;
     this.keys = k;
 
 //    var key = k.KEY;
@@ -39,8 +39,12 @@ Controles.prototype.assignKeybordToChar = function (char) {
     document.addEventListener("deactivatekey", function (e) {
         self.activateCharCommande(char);
     });
+
+    document.addEventListener("activatemousebutton", function (e) {
+        self.activateCharCommande(char);
+    });
     
-    document.addEventListener("mousedown", function (e) {
+    document.addEventListener("deactivatemousebutton", function (e) {
         self.activateCharCommande(char);
     });
 
@@ -51,11 +55,19 @@ Controles.prototype.activateCharCommande = function (char) {
 
     var keys = this.keys.getKeysActivated();
     var keysReverse = this.swap(keys);
-    var d = this.directions;
     var key = this.keys.KEY;
 
+    var mouseButtons = this.mouse.getButtonsActivated();
+    var mouseButtonsReverse = this.swap(mouseButtons);
+    var mouseButton = this.mouse.BUTTON;
+
     //commandes à la souris
-//    if(mouse.click)
+    if (mouseButton.left in mouseButtonsReverse) {
+        char.attaquer();
+    }else{
+        char.annulerAttaque();
+    }
+    
 
     //commandes à deux touches
     if (key.up in keysReverse && key.right in keysReverse) {
@@ -101,7 +113,7 @@ Controles.prototype.activateCharCommande = function (char) {
         return true;
     }
 
-    
+
     char.doNothing();
     return false;
 };

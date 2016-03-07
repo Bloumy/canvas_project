@@ -10,7 +10,7 @@ var Directions = require('./Directions');
  * @returns {Personnage}
  */
 function Personnage(url, x, y, direction) {
-
+    
     this.FRAME_PAR_CASE = 1; // on change de frame tout les 8px de deplacement
 
     this.NB_PX_DEPLACEMENT = 4; // distance d'un déplacement en pixels 
@@ -22,6 +22,7 @@ function Personnage(url, x, y, direction) {
     var d = new Directions();
     this.DIRECTIONS = d.DIRECTION;
 
+    this.map = null;
     this.vitesse = this.DEFAULT_VITESSE; // modifié par des sorts
     this.xPixel = x * 32; // (en pixels)
     this.yPixel = y * 32; // (en pixels)
@@ -33,6 +34,7 @@ function Personnage(url, x, y, direction) {
     this.image.src = "sprites/" + url;
     this.largeur = this.image.width / 4;
     this.hauteur = this.image.height / 4;
+    this.hitBoxRayon = (this.largeur + this.hauteur)/4;
 
     this.frame = 0;
     this.interval = null;
@@ -188,7 +190,8 @@ Personnage.prototype.canGoTo = function (map, coord) {
 
 Personnage.prototype.equiperArme = function (arme) {
     this.arme = arme;
-    arme.equipedBy = this;
+    this.arme.equipedBy = this;
+    this.arme.equipeToChar(this);
     this.positionnerArme();
 };
 
@@ -198,9 +201,23 @@ Personnage.prototype.positionnerArme = function () {
     }
     
     this.arme.positionnerArmeOnChar();
+};
+
+Personnage.prototype.attaquer = function(){
+    if(!this.arme){
+        return false;
+    }
     
-//    Si personnage a droite, positionner arme comme ceci
-//    Si personnage a gauche, positionner arme comme cela
+    this.arme.attaquer();
+    return true;
+};
+
+Personnage.prototype.annulerAttaque = function(){
+    if(!this.arme){
+        return false;
+    }
+    this.arme.annulerAttaque();
+    return true;
 };
 
 module.exports = Personnage;
