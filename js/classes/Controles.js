@@ -1,6 +1,7 @@
 var Key = require('./Key');
 var Mouse = require('./Mouse');
 var Directions = require('./Directions');
+var Helper = require('./Helper');
 
 function Controles(map, canvasDiv) {
     this.i = 0;
@@ -33,26 +34,30 @@ Controles.prototype.initCommandeKey = function () {
 Controles.prototype.assignKeybordToChar = function (char) {
     var self = this;
     document.addEventListener("activatekey", function (e) {
-        self.activateCharCommande(char);
+        self.activateCharCommande(char, e);
     });
 
     document.addEventListener("deactivatekey", function (e) {
-        self.activateCharCommande(char);
+        self.activateCharCommande(char, e);
     });
 
     document.addEventListener("activatemousebutton", function (e) {
-        self.activateCharCommande(char);
+        self.activateCharCommande(char, e);
     });
-    
+
     document.addEventListener("deactivatemousebutton", function (e) {
-        self.activateCharCommande(char);
+        self.activateCharCommande(char, e);
     });
 
 };
 
 
-Controles.prototype.activateCharCommande = function (char) {
+Controles.prototype.activateCharCommande = function (char, e) {
 
+    if (e === undefined) {
+        e = null;
+    }
+    var helper = new Helper();
     var keys = this.keys.getKeysActivated();
     var keysReverse = this.swap(keys);
     var key = this.keys.KEY;
@@ -64,12 +69,18 @@ Controles.prototype.activateCharCommande = function (char) {
     //commandes à la souris
     if (mouseButton.left in mouseButtonsReverse) {
         char.chargerAttaque();
-    }else{
-        if(char.isChargingAttaque){
+    } else {
+        if (char.isChargingAttaque) {
             char.attaquer();
         }
     }
-    
+
+    if (mouseButton.right in mouseButtonsReverse) {
+        var angle = helper.getAngleBetweenTwoPoints(char.xPixel, char.yPixel, e.coordonates.x, e.coordonates.y);
+        console.log(angle);
+        char.deplacer(angle, this.map);
+        return true;
+    }
 
     //commandes à deux touches
     if (key.up in keysReverse && key.right in keysReverse) {

@@ -257,7 +257,6 @@ Arme.prototype.positionnerArmeOnChar = function () {
                     this.angle = angleStart;
                     this.zindex = zindex + 10;
                 }
-
             }
 
             break;

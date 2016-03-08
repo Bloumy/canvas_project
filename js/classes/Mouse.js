@@ -46,6 +46,7 @@ Mouse.prototype.initMouse = function () {
             eventActivateMouseButtonDown.buttonCode = e.which;
             eventActivateMouseButtonDown.button = self.BUTTON_REVERSE[e.which];
             eventActivateMouseButtonDown.buttonsActivated = self.getButtonsActivated();
+            eventActivateMouseButtonDown.coordonates = {x: e.clientX, y: e.clientY};
             document.dispatchEvent(eventActivateMouseButtonDown);
         }
     });
@@ -58,6 +59,7 @@ Mouse.prototype.initMouse = function () {
             eventActivateMouseButtonUp.buttonCode = e.which;
             eventActivateMouseButtonUp.button = self.BUTTON_REVERSE[e.which];
             eventActivateMouseButtonUp.buttonsActivated = self.getButtonsActivated();
+            eventActivateMouseButtonUp.coordonates = {x: e.clientX, y: e.clientY};
             document.dispatchEvent(eventActivateMouseButtonUp);
         }
     });
