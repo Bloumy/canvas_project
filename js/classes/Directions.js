@@ -16,9 +16,9 @@ function Directions(){
 
 // 4 frames
 Directions.prototype.DIRECTION = {
-    "BAS": 0,
-    "GAUCHE": 1,
-    "DROITE": 2,
+    "DROITE": 0,
+    "BAS": 1,
+    "GAUCHE": 2,
     "HAUT": 3
 };
 

@@ -15,7 +15,7 @@ Controles.prototype.initCommandeKey = function () {
 
     var k = new Key(this.canvasDiv);
     var m = new Mouse(this.canvasDiv);
-    this.mouseKeys = m;
+    this.mouse = m;
     this.keys = k;
 
 //    var key = k.KEY;
@@ -39,8 +39,12 @@ Controles.prototype.assignKeybordToChar = function (char) {
     document.addEventListener("deactivatekey", function (e) {
         self.activateCharCommande(char);
     });
+
+    document.addEventListener("activatemousebutton", function (e) {
+        self.activateCharCommande(char);
+    });
     
-    document.addEventListener("mousedown", function (e) {
+    document.addEventListener("deactivatemousebutton", function (e) {
         self.activateCharCommande(char);
     });
 
@@ -51,30 +55,44 @@ Controles.prototype.activateCharCommande = function (char) {
 
     var keys = this.keys.getKeysActivated();
     var keysReverse = this.swap(keys);
-    var d = this.directions;
     var key = this.keys.KEY;
 
+    var mouseButtons = this.mouse.getButtonsActivated();
+    var mouseButtonsReverse = this.swap(mouseButtons);
+    var mouseButton = this.mouse.BUTTON;
+
     //commandes à la souris
-//    if(mouse.click)
+    if (mouseButton.left in mouseButtonsReverse) {
+        char.chargerAttaque();
+    }else{
+        if(char.isChargingAttaque){
+            char.attaquer();
+        }
+    }
+    
 
     //commandes à deux touches
     if (key.up in keysReverse && key.right in keysReverse) {
-        char.deplacer(45, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
-        return true;
-    }
-
-    if (key.down in keysReverse && key.right in keysReverse) {
+//        char.deplacer(45, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         char.deplacer(315, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         return true;
     }
 
+    if (key.down in keysReverse && key.right in keysReverse) {
+//        char.deplacer(315, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+        char.deplacer(45, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+        return true;
+    }
+
     if (key.up in keysReverse && key.left in keysReverse) {
-        char.deplacer(135, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+//        char.deplacer(135, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+        char.deplacer(225, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         return true;
     }
 
     if (key.down in keysReverse && key.left in keysReverse) {
-        char.deplacer(225, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+//        char.deplacer(225, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
+        char.deplacer(135, this.map); // déplace le personnage en ligne droite jusqu'à ce que la commande ne soit plus active
         return true;
     }
 
@@ -82,7 +100,8 @@ Controles.prototype.activateCharCommande = function (char) {
 
     //commandes à une touche
     if (key.up in keysReverse) {
-        char.deplacer(90, this.map);
+//        char.deplacer(90, this.map);
+        char.deplacer(270, this.map);
         return true;
     }
 
@@ -92,7 +111,8 @@ Controles.prototype.activateCharCommande = function (char) {
     }
 
     if (key.down in keysReverse) {
-        char.deplacer(270, this.map);
+//        char.deplacer(270, this.map);
+        char.deplacer(90, this.map);
         return true;
     }
 
@@ -101,7 +121,7 @@ Controles.prototype.activateCharCommande = function (char) {
         return true;
     }
 
-    
+
     char.doNothing();
     return false;
 };

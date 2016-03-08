@@ -4,14 +4,14 @@ function Mouse(canvas) {
 }
 
 Mouse.prototype.BUTTON_REVERSE = {
-    '1': 'right',
+    '1': 'left',
     '2': 'center',
-    '3': 'left'
+    '3': 'right'
 };
 Mouse.prototype.BUTTON = {
-    'right': '1',
+    'left': '1',
     'center': '2',
-    'left': '3'
+    'right': '3'
 };
 
 Mouse.prototype.SCROLL_REVERSE = {
