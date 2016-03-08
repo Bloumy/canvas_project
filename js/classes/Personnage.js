@@ -72,6 +72,10 @@ Personnage.prototype.dessinerPersonnage = function (context) {
         this.arme.positionnerArmeOnChar();
         this.arme.dessinerArme(context);
     }
+    
+    if (this.arme.isChargingAttaque) {
+        this.arme.hitBox.drawDamageZone(context);
+    }
 };
 
 Personnage.prototype.getCoordonneesAdjacentes = function (angle, nbPx) {

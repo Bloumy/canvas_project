@@ -26,33 +26,52 @@ HitBox.prototype.positionnerHitBox = function () {
 
 };
 
-HitBox.prototype.drawHitBox = function (context) {
-    var helper = new Helper();
+HitBox.prototype.drawDamageZone = function (context) {
+    var timePassed = Date.now() - this.owner.timeCurrentChargement;
+    var timeMax = this.owner.chargementAttaqueDuration;
+
+
+//    var helper = new Helper();
     this.positionnerHitBox();
 
-    var startingAngle = -this.angle / 2 + this.angleOffset;
-    var endingAngle = this.angle / 2 + this.angleOffset;
-    
-    //arc de cercle
-    context.beginPath();
-    context.arc(this.hitBoxCenterX, this.hitBoxCenterY, this.hitBoxRayon, this.degresToRadians(startingAngle), this.degresToRadians(endingAngle), false);
-    context.stroke();
-    
-    //ligne1
-    context.moveTo(this.hitBoxCenterX, this.hitBoxCenterY);
-    context.lineTo(
-            helper.getCoordonnees(this.hitBoxCenterX, this.hitBoxCenterY, startingAngle, this.hitBoxRayon).x,
-            helper.getCoordonnees(this.hitBoxCenterX, this.hitBoxCenterY, startingAngle, this.hitBoxRayon).y
-            );
-    context.stroke();
+    var startingAngle = (-this.angle / 2) + this.angleOffset;
+    var endingAngle = (this.angle / 2) + this.angleOffset;
 
-    //ligne2
+    //arc de cercle rempli en fonction du temps passé en chargement
+    context.beginPath();
     context.moveTo(this.hitBoxCenterX, this.hitBoxCenterY);
-    context.lineTo(
-            helper.getCoordonnees(this.hitBoxCenterX, this.hitBoxCenterY, endingAngle, this.hitBoxRayon).x,
-            helper.getCoordonnees(this.hitBoxCenterX, this.hitBoxCenterY, endingAngle, this.hitBoxRayon).y
-            );
+
+    context.arc(this.hitBoxCenterX, this.hitBoxCenterY, this.hitBoxRayon * timePassed / timeMax, this.degresToRadians(startingAngle), this.degresToRadians(endingAngle), false);
+    context.lineTo(this.hitBoxCenterX, this.hitBoxCenterY);
+    context.fillStyle = 'red';
+    context.fill();
+    context.closePath();
+
+
+    context.beginPath();
+    context.moveTo(this.hitBoxCenterX, this.hitBoxCenterY);
+    context.arc(this.hitBoxCenterX, this.hitBoxCenterY, this.hitBoxRayon, this.degresToRadians(startingAngle), this.degresToRadians(endingAngle), false);
+    context.lineTo(this.hitBoxCenterX, this.hitBoxCenterY);
     context.stroke();
+    context.closePath();
+
+
+
+    //ligne1
+//    context.moveTo(this.hitBoxCenterX, this.hitBoxCenterY);
+//    context.lineTo(
+//            helper.getCoordonnees(this.hitBoxCenterX, this.hitBoxCenterY, startingAngle, this.hitBoxRayon).x,
+//            helper.getCoordonnees(this.hitBoxCenterX, this.hitBoxCenterY, startingAngle, this.hitBoxRayon).y
+//            );
+//    context.stroke();
+//
+//    //ligne2
+//    context.moveTo(this.hitBoxCenterX, this.hitBoxCenterY);
+//    context.lineTo(
+//            helper.getCoordonnees(this.hitBoxCenterX, this.hitBoxCenterY, endingAngle, this.hitBoxRayon).x,
+//            helper.getCoordonnees(this.hitBoxCenterX, this.hitBoxCenterY, endingAngle, this.hitBoxRayon).y
+//            );
+//    context.stroke();
 
 };
 
