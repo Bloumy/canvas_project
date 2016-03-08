@@ -138,48 +138,126 @@ Arme.prototype.positionnerArmeOnChar = function () {
 
     switch (this.getType()) {
         case this.type = this.TYPE.EPEE:
-            
+
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.DROITE) {
-                
+                var txStart = 44;
+                var txEnd = 14;
+
+                var tyStart = 4;
+                var tyEnd = -8;
+
+                var angleStart = 90;
+                var angleEnd = 40;
+
                 if (this.animationAttaque) {
                     this.tx = 50;
                     this.ty = 40;
                     this.angle = 150;
                     this.zindex = zindex + 10;
-                    
+
                 } else if (this.isChargingAttaque) {
-                    this.tx = 14 + (30 - 30 * this.pourcentageChargeAttaque / 100);
-                    this.ty = -8 + (12 - 12 * this.pourcentageChargeAttaque / 100);
-                    this.angle = 40 + (50 - 50 * this.pourcentageChargeAttaque / 100);
+                    this.tx = txEnd + ((txStart - txEnd) - (txStart - txEnd) * this.pourcentageChargeAttaque / 100); // passer de 44 à 14
+                    this.ty = tyEnd + ((tyStart - tyEnd) - (tyStart - tyEnd) * this.pourcentageChargeAttaque / 100); // passer de 44 à 14
+                    this.angle = angleEnd + ((angleStart - angleEnd) - (angleStart - angleEnd) * this.pourcentageChargeAttaque / 100);
                     this.zindex = zindex + 10;
-                    
+
                 } else {
-                    this.tx = 44;
-                    this.ty = 4;
-                    this.angle = 90;
+                    this.tx = txStart;
+                    this.ty = tyStart;
+                    this.angle = angleStart;
                     this.zindex = zindex + 10;
                 }
             }
 
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.GAUCHE) {
-                this.tx = -13;
-                this.ty = 4;
-                this.angle = 0;
-                this.zindex -= zindex - 10;
+                var txStart = -13;
+                var txEnd = 17;
+
+                var tyStart = 4;
+                var tyEnd = -8;
+
+                var angleStart = 0;
+                var angleEnd = 50;
+
+                if (this.animationAttaque) {
+                    this.tx = -19;
+                    this.ty = 36;
+                    this.angle = -60;
+                    this.zindex = zindex - 10;
+
+                } else if (this.isChargingAttaque) {
+                    this.tx = txEnd + ((txStart - txEnd) - (txStart - txEnd) * this.pourcentageChargeAttaque / 100); // passer de 44 à 14
+                    this.ty = tyEnd + ((tyStart - tyEnd) - (tyStart - tyEnd) * this.pourcentageChargeAttaque / 100); // passer de 44 à 14
+                    this.angle = angleEnd + ((angleStart - angleEnd) - (angleStart - angleEnd) * this.pourcentageChargeAttaque / 100);
+                    this.zindex = zindex - 10;
+
+                } else {
+                    this.tx = txStart;
+                    this.ty = tyStart;
+                    this.angle = angleStart;
+                    this.zindex = zindex - 10;
+                }
             }
 
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.HAUT) {
-                this.tx = 20;
-                this.ty = -6;
-                this.angle = 45;
-                this.zindex = zindex - 10;
+                var txStart = 20;
+                var txEnd = 20;
+
+                var tyStart = -6;
+                var tyEnd = -20;
+
+                var angleStart = 45;
+                var angleEnd = 45;
+
+                if (this.animationAttaque) {
+                    this.tx = 20;
+                    this.ty = 40;
+                    this.angle = 225;
+                    this.zindex = zindex - 10;
+
+                } else if (this.isChargingAttaque) {
+                    this.tx = txEnd + ((txStart - txEnd) - (txStart - txEnd) * this.pourcentageChargeAttaque / 100); // passer de 44 à 14
+                    this.ty = tyEnd + ((tyStart - tyEnd) - (tyStart - tyEnd) * this.pourcentageChargeAttaque / 100); // passer de 44 à 14
+                    this.angle = angleEnd + ((angleStart - angleEnd) - (angleStart - angleEnd) * this.pourcentageChargeAttaque / 100);
+                    this.zindex = zindex - 10;
+
+                } else {
+                    this.tx = txStart;
+                    this.ty = tyStart;
+                    this.angle = angleStart;
+                    this.zindex = zindex - 10;
+                }
             }
 
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.BAS) {
-                this.tx = 14;
-                this.ty = -6;
-                this.angle = 45;
-                this.zindex = zindex + 10;
+                var txStart = 12;
+                var txEnd = 12;
+
+                var tyStart = -6;
+                var tyEnd = -20;
+
+                var angleStart = 45;
+                var angleEnd = 45;
+
+                if (this.animationAttaque) {
+                    this.tx = 12;
+                    this.ty = 66;
+                    this.angle = 225;
+                    this.zindex = zindex + 10;
+
+                } else if (this.isChargingAttaque) {
+                    this.tx = txEnd + ((txStart - txEnd) - (txStart - txEnd) * this.pourcentageChargeAttaque / 100); // passer de 44 à 14
+                    this.ty = tyEnd + ((tyStart - tyEnd) - (tyStart - tyEnd) * this.pourcentageChargeAttaque / 100); // passer de 44 à 14
+                    this.angle = angleEnd + ((angleStart - angleEnd) - (angleStart - angleEnd) * this.pourcentageChargeAttaque / 100);
+                    this.zindex = zindex + 10;
+
+                } else {
+                    this.tx = txStart;
+                    this.ty = tyStart;
+                    this.angle = angleStart;
+                    this.zindex = zindex + 10;
+                }
+
             }
 
             break;
