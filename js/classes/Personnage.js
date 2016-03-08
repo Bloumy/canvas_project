@@ -204,6 +204,7 @@ Personnage.prototype.canGoTo = function (map, coord) {
 Personnage.prototype.equiperArme = function (arme) {
     this.arme = arme;
     this.arme.equipedBy = this;
+    this.arme.zindex = this.zindex;
     this.arme.equipeToChar(this);
     this.positionnerArme();
 };

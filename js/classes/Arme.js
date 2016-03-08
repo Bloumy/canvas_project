@@ -37,6 +37,7 @@ function Arme(name, url, spriteX, spriteY, tx, ty, angle) {
     this.yPixel = ty;
     this.tx = tx;
     this.ty = ty;
+    this.zindex = 0;
 
     // passe à true quand on effectue l'action "attaque"
     this.animationAttaque = false;
@@ -48,7 +49,7 @@ function Arme(name, url, spriteX, spriteY, tx, ty, angle) {
     this.timeCurrentChargement = null;
     this.chargementAttaqueDuration = 1000;  // millisecondes
     this.chargementAttaqueTimeOutHolder = null;
-
+    this.pourcentageChargeAttaque = 0;
     // type de l'arme, par defaut, custom
     this.type = this.TYPE.CUSTOM;
 
@@ -71,6 +72,7 @@ function Arme(name, url, spriteX, spriteY, tx, ty, angle) {
 Arme.prototype.equipeToChar = function (char) {
     this.equipedBy = char;
     char.arme = this;
+    this.zindex = char.zindex;
 };
 
 
@@ -116,87 +118,75 @@ Arme.prototype.getType = function () {
 };
 
 Arme.prototype.positionnerArmeOnChar = function () {
-    this.xPixel = this.equipedBy.xPixel;
-    this.yPixel = this.equipedBy.yPixel;
+
 
     if (!this.equipedBy) {
         return;
     }
+    if (this.isChargingAttaque) {
+        this.pourcentageChargeAttaque = (Date.now() - this.timeCurrentChargement) * 100 / this.chargementAttaqueDuration;
+    }
 
-    var nbFrameAttaque = this.attaqueDuration / this.equipedBy.map.refreshInterval;
-    var nbFrameChargementAttaque = this.chargementAttaqueDuration / this.equipedBy.map.refreshInterval;
+    this.xPixel = this.equipedBy.xPixel;
+    this.yPixel = this.equipedBy.yPixel;
 
-    var translationX = 0;
-    var translationY = 0;
-    var angle = 0;
-    var zindex = this.equipedBy.zindex;
 
-    //pour passer la frame de l'arme sous celle du char
+//    var nbFrameAttaque = this.attaqueDuration / this.equipedBy.map.refreshInterval;
+//    var nbFrameChargementAttaque = this.chargementAttaqueDuration / this.equipedBy.map.refreshInterval;
+
+    var zindex = this.equipedBy.zindex;    //pour passer la frame de l'arme sous celle du char
 
     switch (this.getType()) {
         case this.type = this.TYPE.EPEE:
+            
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.DROITE) {
+                
                 if (this.animationAttaque) {
-
-//                    translationX += 44;
-//                    translationY += this.ty + 30 / nbFrameAttaque;
-//                    translationY += 30;
-//                    angle += 60;
-//                    angle += this.angle + 60 / nbFrameAttaque;
-
-
-                    translationX += 50;
-                    translationY += 40;
-                    angle += 150;
-                    zindex += 10;
+                    this.tx = 50;
+                    this.ty = 40;
+                    this.angle = 150;
+                    this.zindex = zindex + 10;
+                    
                 } else if (this.isChargingAttaque) {
-                    translationX += 14;
-//                    translationX += this.tx - 59 / nbFrameChargementAttaque;;
-                    translationY += -8;
-//                    translationY += this.ty - 10 / nbFrameChargementAttaque;
-                    angle += 40;
-//                    angle += this.angle - 90 / nbFrameChargementAttaque;
-                    zindex += 10;
+                    this.tx = 14 + (30 - 30 * this.pourcentageChargeAttaque / 100);
+                    this.ty = -8 + (12 - 12 * this.pourcentageChargeAttaque / 100);
+                    this.angle = 40 + (50 - 50 * this.pourcentageChargeAttaque / 100);
+                    this.zindex = zindex + 10;
+                    
                 } else {
-                    translationX += 44;
-                    translationY += 4;
-                    angle += 90;
-                    zindex += 10;
+                    this.tx = 44;
+                    this.ty = 4;
+                    this.angle = 90;
+                    this.zindex = zindex + 10;
                 }
             }
 
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.GAUCHE) {
-                translationX -= 13;
-                translationY += 4;
-                angle += 0;
-                zindex -= 10;
+                this.tx = -13;
+                this.ty = 4;
+                this.angle = 0;
+                this.zindex -= zindex - 10;
             }
 
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.HAUT) {
-                translationX += 20;
-                translationY -= 6;
-                angle += 45;
-                zindex -= 10;
+                this.tx = 20;
+                this.ty = -6;
+                this.angle = 45;
+                this.zindex = zindex - 10;
             }
 
             if (this.equipedBy.direction === this.equipedBy.DIRECTIONS.BAS) {
-                translationX += 14;
-                translationY -= 6;
-                angle += 45;
-                zindex += 10;
+                this.tx = 14;
+                this.ty = -6;
+                this.angle = 45;
+                this.zindex = zindex + 10;
             }
 
             break;
         default:
             ;
-
     }
     ;
-
-    this.tx = translationX;
-    this.ty = translationY;
-    this.angle = angle;
-    this.zindex = zindex;
 };
 
 Arme.prototype.chargerAttaque = function () {
@@ -217,6 +207,7 @@ Arme.prototype.attaquer = function () {
     }
 
     clearTimeout(this.chargementAttaqueTimeOutHolder);
+    this.pourcentageChargeAttaque = 0;
     this.isChargingAttaque = false;
     this.animationAttaque = true;
 
